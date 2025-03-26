@@ -11,6 +11,6 @@ Kana Match is still in development. Please check back for updates soon!
 
 ## Asset Attribution
 
-The application icon is a modified version of [this icon by andinur](https://www.flaticon.com/free-icons/matcha) with a modified version of [another icon by rizal2109](https://www.flaticon.com/free-icons/hiragana) overlaid on top.
+The application icon is a modified version of an icon by andinur with a modified version of another icon by rizal2109 overlaid on top, both obtained from [FlatPNG](https://www.flaticon.com/free-icons/).
 
 Kana flash cards were sourced from *The Japan Times* Self-study Room's [hiragana](https://genki3.japantimes.co.jp/en/student/hiragana/) and [katakana](https://genki3.japantimes.co.jp/en/student/katakana/) charts.
