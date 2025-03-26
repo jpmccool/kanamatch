@@ -44,11 +44,9 @@ class MainWindow (QMainWindow) :
         hiraganaCheck.setChecked(True)  # This is a sensible default
         basicCheck.setChecked(True)     # This is a sensible default        
         multipleRadio.setChecked(True)  # This is a sensible default
-        multipleSpin.setRange(2, 10)     # There must be at least two options for the quiz to be considered multiple choice
+        multipleSpin.setRange(2, 10)    # There must be at least two options for the quiz to be considered multiple choice
         multipleSpin.setValue(4)        # This is a sensible default
-        
-        #startButton.clicked.connect(self.begin_quiz())
-        
+                
         kanaBox = QVBoxLayout()
         kanaBox.addStretch(1)
         kanaBox.addWidget(hiraganaCheck)
@@ -83,9 +81,6 @@ class MainWindow (QMainWindow) :
         centralWidget = QWidget()
         centralWidget.setLayout(mainLayout)
         self.setCentralWidget(centralWidget)
-
-    def toggleCheck (self) :
-        print("toggled")
     
 app = QApplication(sys.argv)
 
