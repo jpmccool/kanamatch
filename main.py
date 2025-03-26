@@ -1,5 +1,7 @@
 import sys
 
+from PySide6.QtGui import QIcon
+
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -18,6 +20,7 @@ class MainWindow (QMainWindow) :
         super().__init__()
         
         self.setWindowTitle("Kana Match")
+        self.setWindowIcon(QIcon("icon.png"))
 
         topLabel        = QLabel("Choose your kana quiz:")
         kanaGroup       = QGroupBox("Kana")
