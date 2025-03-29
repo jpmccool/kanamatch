@@ -25,21 +25,21 @@ class MainWindow (QMainWindow) :
         self.setWindowTitle("Kana Match")
         self.setWindowIcon(QIcon("icon.png"))
 
-        topLabel             = QLabel("Choose your kana quiz:")
-        kanaGroup            = QGroupBox("Script")
+        self.topLabel        = QLabel("Choose your kana quiz:")
+        self.kanaGroup       = QGroupBox("Script")
         self.hiraganaCheck   = QCheckBox("Hiragana")
         self.katakanaCheck   = QCheckBox("Katakana")
-        setGroup             = QGroupBox("Include")
+        self.setGroup        = QGroupBox("Include")
         self.basicCheck      = QCheckBox("Basic kana")
         self.diacriticCheck  = QCheckBox("Diacritics ( \" / º )")
         self.digraphCheck    = QCheckBox("Digraphs (yōon)")
-        optionsGroup         = QGroupBox("Options")
-        multipleRadio        = QRadioButton("Multiple choice")
+        self.optionsGroup    = QGroupBox("Options")
+        self.multipleRadio   = QRadioButton("Multiple choice")
         self.multipleSpin    = QSpinBox()
-        multipleLabel        = QLabel("choices (max. 10)")
-        inputRadio           = QRadioButton("Rōmaji input")
+        self.multipleLabel   = QLabel("choices (max. 10)")
+        self.inputRadio      = QRadioButton("Rōmaji input")
         self.hardCheck       = QCheckBox("No second chances (hard)") 
-        startButton          = QPushButton("Start!")
+        self.startButton     = QPushButton("Start!")
         
         # TODO: Set previously selected options, or options from saved preferences, or sensible default options, in that order
         # TODO: Add a button to let the user save the current options, but only if they make sense
@@ -47,41 +47,45 @@ class MainWindow (QMainWindow) :
         self.basicCheck.setChecked(True)      # This is a sensible default
         self.diacriticCheck.setChecked(False) # This is a sensible default
         self.digraphCheck.setChecked(False)   # This is a sensible default        
-        multipleRadio.setChecked(True)  # This is a sensible default
-        self.multipleSpin.setRange(2, 10)    # There must be at least two options for the quiz to be considered multiple choice
-        self.multipleSpin.setValue(4)        # This is a sensible default
-        startButton.clicked.connect(self.launch_game)
+        self.multipleRadio.setChecked(True)   # This is a sensible default
+        self.multipleSpin.setRange(2, 10)     # There must be at least two options for the quiz to be considered multiple choice
+        self.multipleSpin.setValue(4)         # This is a sensible default
+        self.startButton.clicked.connect(self.launch_game)
+        
+        self.layout_widgets()
                 
+    def layout_widgets (self) :
+        
         kanaBox = QVBoxLayout()
         kanaBox.addStretch(1)
         kanaBox.addWidget(self.hiraganaCheck)
         kanaBox.addWidget(self.katakanaCheck)
-        kanaGroup.setLayout(kanaBox)
+        self.kanaGroup.setLayout(kanaBox)
         
         setBox = QVBoxLayout()
         setBox.addStretch(1)
         setBox.addWidget(self.basicCheck)
         setBox.addWidget(self.diacriticCheck)
         setBox.addWidget(self.digraphCheck)
-        setGroup.setLayout(setBox)
+        self.setGroup.setLayout(setBox)
 
         optionsBox = QVBoxLayout()
         optionsBox.addStretch(1)
-        optionsBox.addWidget(multipleRadio)
+        optionsBox.addWidget(self.multipleRadio)
         multipleBox = QHBoxLayout()        
         multipleBox.addWidget(self.multipleSpin)
-        multipleBox.addWidget(multipleLabel)
+        multipleBox.addWidget(self.multipleLabel)
         optionsBox.addLayout(multipleBox)
-        optionsBox.addWidget(inputRadio)
+        optionsBox.addWidget(self.inputRadio)
         optionsBox.addWidget(self.hardCheck)        
-        optionsGroup.setLayout(optionsBox)
+        self.optionsGroup.setLayout(optionsBox)
         
         mainLayout = QVBoxLayout()
-        mainLayout.addWidget(topLabel)
-        mainLayout.addWidget(kanaGroup)
-        mainLayout.addWidget(setGroup)
-        mainLayout.addWidget(optionsGroup)
-        mainLayout.addWidget(startButton)
+        mainLayout.addWidget(self.topLabel)
+        mainLayout.addWidget(self.kanaGroup)
+        mainLayout.addWidget(self.setGroup)
+        mainLayout.addWidget(self.optionsGroup)
+        mainLayout.addWidget(self.startButton)
 
         centralWidget = QWidget()
         centralWidget.setLayout(mainLayout)
