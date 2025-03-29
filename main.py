@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 )
 
 import kanadict
+from game import MultipleChoiceGameWindow
 
 class MainWindow (QMainWindow) :
     def __init__(self) :
@@ -42,10 +43,10 @@ class MainWindow (QMainWindow) :
         
         # TODO: Set previously selected options, or options from saved preferences, or sensible default options, in that order
         # TODO: Add a button to let the user save the current options, but only if they make sense
-        self.hiraganaCheck.setChecked(True)  # This is a sensible default
-        self.basicCheck.setChecked(True)     # This is a sensible default
-        self.diacriticCheck.setChecked(True) # This is a sensible default
-        self.digraphCheck.setChecked(True)   # This is a sensible default        
+        self.hiraganaCheck.setChecked(True)   # This is a sensible default
+        self.basicCheck.setChecked(True)      # This is a sensible default
+        self.diacriticCheck.setChecked(False) # This is a sensible default
+        self.digraphCheck.setChecked(False)   # This is a sensible default        
         multipleRadio.setChecked(True)  # This is a sensible default
         multipleSpin.setRange(2, 10)    # There must be at least two options for the quiz to be considered multiple choice
         multipleSpin.setValue(4)        # This is a sensible default
@@ -105,7 +106,10 @@ class MainWindow (QMainWindow) :
             deck -= kanadict.diacritic
         if not digraph :
             deck -= kanadict.digraph
-        print(deck)
+        
+        self.game = MultipleChoiceGameWindow(deck, 5, True)
+        self.game.show()
+        
     
 app = QApplication(sys.argv)
 
