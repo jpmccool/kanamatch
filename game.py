@@ -62,20 +62,21 @@ class MultipleChoiceGameWindow (GameWindow) :
         self.draw()
     
     def draw (self) :
+        # Draw a card
         curr_card = super().draw()
-        
+        # Clear the inputLayout of old buttons, if any
         while self.inputLayout.count() > 0 :
             button = self.inputLayout.takeAt(0)
             if button.widget() is True :
                 button.widget().deleteLater()
-        
-        
+        # Remove the current card from the list of tags temporarily to avoid false buttons
         self.tags.remove(curr_card)
-        # TODO: also remove any tags from self.tags with conflicting labels
+        # TODO: also remove any tags from self.tags with conflicting labels, temporarily
+        # Build a hand of random tags for the 'wrong' options and shuffle in the one correct tag (curr_card)
         hand = random.sample(self.tags, self.choices - 1)
         hand.append(curr_card)
         hand = random.sample(hand, self.choices)
-        
+        # For each card in the hand, add a new button with the appropriate label to the inputLayout
         for card in hand :
             button = QPushButton(kanadict.kana[card][1]) # TODO: Set the label to include alternate acceptable answers, e.g. he / e, o / wo, etc.
             if card is curr_card :
@@ -83,13 +84,16 @@ class MultipleChoiceGameWindow (GameWindow) :
             else :
                 button.clicked.connect(self.failure)
             self.inputLayout.addWidget(button)
+        # Add the current card back to the list of tags so that it can appear as a wrong answer later (or you'll run out of tags at the end!)
         self.tags.append(curr_card)
         # TODO: Also add back in any cards taken out in the TODO above
-            
+    
+    # One point for a correct guess, then move on to the next card
     def success (self) :
         self.score += 1
         self.next()
     
+    # Minus one point for a wrong guess, then either move on to the next card (isHard) or grey out the button (otherwise)
     def failure (self) :
         self.score -= 1
         if self.isHard :
@@ -97,6 +101,7 @@ class MultipleChoiceGameWindow (GameWindow) :
         else :
             self.sender().setEnabled(False)
     
+    # Draw the next card, or end the game if the deck is empty
     def next (self) :
         if len(self.deck) > 0 :
             self.draw()
