@@ -1,5 +1,9 @@
 import sys, random
 
+from PySide6.QtCore import (
+    Qt,
+)
+
 from PySide6.QtGui import (
     QIcon,
     QPixmap,
@@ -28,13 +32,16 @@ class GameWindow (QMainWindow) :
         self.score = 0
         self.n_cards = len(self.deck)
         
-        self.cardLabel = QLabel(self)
+        self.cardLabel = QLabel()
+        self.cardLabel.setAlignment(Qt.AlignHCenter)
         self.inputLayout = QHBoxLayout()
         
+        self.layout_widgets()
+    
+    def layout_widgets (self) :
         mainLayout = QVBoxLayout()
-        mainLayout.addWidget(self.cardLabel)
+        mainLayout.addWidget(self.cardLabel, Qt.AlignHCenter)
         mainLayout.addLayout(self.inputLayout)
-        
         centralWidget = QWidget()
         centralWidget.setLayout(mainLayout)
         self.setCentralWidget(centralWidget)
