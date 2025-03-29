@@ -71,7 +71,7 @@ class MultipleChoiceGameWindow (GameWindow) :
                 button.widget().deleteLater()
         # Remove the current card from the list of tags temporarily to avoid false buttons
         self.tags.remove(curr_card)
-        # TODO: also remove any tags from self.tags with conflicting labels, temporarily
+        # TODO: also remove any tags from self.tags with conflicting labels, temporarily: ji and (d)ji, zu and (d)zu, ha/wa and wa, he/e and e, wo/o and o
         # Build a hand of random tags for the 'wrong' options and shuffle in the one correct tag (curr_card)
         hand = random.sample(self.tags, self.choices - 1)
         hand.append(curr_card)
