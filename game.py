@@ -32,8 +32,8 @@ class GameWindow (QMainWindow) :
         
         self.score = 0
         self.n_cards = len(self.deck)
-        self.correct_responses = 0
-        self.incorrect_responses = 0
+        self.correct = 0
+        self.incorrect = 0
         self.passes = 0
         
         self.cardLabel = QLabel()
@@ -43,11 +43,11 @@ class GameWindow (QMainWindow) :
         self.layout_widgets()
     
     def layout_widgets (self) :
-        mainLayout = QVBoxLayout()
-        mainLayout.addWidget(self.cardLabel, Qt.AlignHCenter)
-        mainLayout.addLayout(self.inputLayout)
+        self.mainLayout = QVBoxLayout()
+        self.mainLayout.addWidget(self.cardLabel, Qt.AlignHCenter)
+        self.mainLayout.addLayout(self.inputLayout)
         centralWidget = QWidget()
-        centralWidget.setLayout(mainLayout)
+        centralWidget.setLayout(self.mainLayout)
         self.setCentralWidget(centralWidget)
         
     def draw (self) :
@@ -57,13 +57,36 @@ class GameWindow (QMainWindow) :
         return card
     
     def end (self) : # TODO: Make a much more satisfying ending
-        print("Complete!")
-        print("Final score:", self.score)
+        self.clear_layout(self.mainLayout)
         self.setWindowTitle("Quiz Complete!")
-        # TODO: Replace graphic in label with a report of how the user did on their quiz
-        # TODO: The above will require a bit more data collection on successes/failures in subclasses
-        # TODO: Clear all widgets in the inputLayer, replace with a button that says "Close Results" that closes the window
+        report  = "<h1>Quiz Complete!</h1><br /><br />"
+        report += "<p><b>Here's how you did...</b></p>"
+        report += "<table>"
+        report += "<tr><td style=\"text-align: right;\">" + str(self.correct) + " </td><td> responses were <b>correct</b></td></tr>"
+        report += "<tr><td style=\"text-align: right;\">" + str(self.incorrect) + " </td><td> responses were <b>incorrect</b></td></tr>"
+        if self.passEnabled :
+            report += "<tr><td style=\"text-align: right;\">" + str(self.passes) + " </td><td> cards were <b>passed over</b></td></tr>"
+        report += "</table>"
+        report += "<p>Total score: <b>" + str(self.score) + "</b></p>"
+        reportLabel = QLabel(report)
+        reportLabel.setTextFormat(Qt.RichText)
+        reportLabel.setWordWrap(True)
+        self.mainLayout.addWidget(reportLabel)
+        closeButton = QPushButton("Close")
+        closeButton.clicked.connect(self.close_window)
+        self.mainLayout.addWidget(closeButton)
+        
+    def clear_layout(self, layout):
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget() is not None:
+                child.widget().deleteLater()
+            elif child.layout() is not None:
+                self.clear_layout(child.layout())
     
+    def close_window (self) :
+        self.close()
+        self.destroy()
 
 class MultipleChoiceGameWindow (GameWindow) :
     def __init__ (self, deck, isHard, passEnabled, choices) :
@@ -76,10 +99,13 @@ class MultipleChoiceGameWindow (GameWindow) :
         # Draw a card
         curr_card = super().draw()
         # Clear the inputLayout of old buttons, if any
+        '''
         while self.inputLayout.count() > 0 :
             button = self.inputLayout.takeAt(0)
             if button.widget() is True :
                 button.widget().deleteLater()
+        '''
+        self.clear_layout(self.inputLayout)
         # Remove the current card from the list of tags temporarily to avoid false buttons
         self.tags.remove(curr_card)
         # TODO: also remove any tags from self.tags with conflicting labels, temporarily: ji and (d)ji, zu and (d)zu, ha/wa and wa, he/e and e, wo/o and o
@@ -107,13 +133,13 @@ class MultipleChoiceGameWindow (GameWindow) :
     # One point for a correct guess, then move on to the next card
     def success (self) :
         self.score += 1
-        self.correct_responses += 1
+        self.correct += 1
         self.next()
     
     # Minus one point for a wrong guess, then either move on to the next card (isHard) or grey out the button (otherwise)
     def failure (self) :
         self.score -= 1
-        self.incorrect_responses += 1
+        self.incorrect += 1
         if self.isHard :
             self.next()
         else :
@@ -130,8 +156,6 @@ class MultipleChoiceGameWindow (GameWindow) :
             self.draw()
         else : # End condition reached
             self.end()
-    
-    
     
 
     
