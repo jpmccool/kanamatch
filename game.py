@@ -21,16 +21,20 @@ from PySide6.QtWidgets import (
 import kanadict
 
 class GameWindow (QMainWindow) :
-    def __init__(self, deck, isHard) :
+    def __init__(self, deck, isHard, passEnabled) :
         super().__init__()
         
         self.setWindowIcon(QIcon("icon.png"))
         
         self.deck = deck    # The deck of flash cards to draw
         self.isHard = isHard
+        self.passEnabled = passEnabled
         
         self.score = 0
         self.n_cards = len(self.deck)
+        self.correct_responses = 0
+        self.incorrect_responses = 0
+        self.passes = 0
         
         self.cardLabel = QLabel()
         self.cardLabel.setAlignment(Qt.AlignHCenter)
@@ -62,8 +66,8 @@ class GameWindow (QMainWindow) :
     
 
 class MultipleChoiceGameWindow (GameWindow) :
-    def __init__ (self, deck, isHard, choices) :
-        super().__init__(deck, isHard)
+    def __init__ (self, deck, isHard, passEnabled, choices) :
+        super().__init__(deck, isHard, passEnabled)
         self.tags = [*self.deck]
         self.choices = choices
         self.draw()
@@ -91,6 +95,11 @@ class MultipleChoiceGameWindow (GameWindow) :
             else :
                 button.clicked.connect(self.failure)
             self.inputLayout.addWidget(button)
+        # If passing is an option, add a pass button
+        if self.passEnabled :
+            button = QPushButton("Pass")
+            button.clicked.connect(self.pass_on)
+            self.inputLayout.addWidget(button)
         # Add the current card back to the list of tags so that it can appear as a wrong answer later (or you'll run out of tags at the end!)
         self.tags.append(curr_card)
         # TODO: Also add back in any cards taken out in the TODO above
@@ -98,15 +107,22 @@ class MultipleChoiceGameWindow (GameWindow) :
     # One point for a correct guess, then move on to the next card
     def success (self) :
         self.score += 1
+        self.correct_responses += 1
         self.next()
     
     # Minus one point for a wrong guess, then either move on to the next card (isHard) or grey out the button (otherwise)
     def failure (self) :
         self.score -= 1
+        self.incorrect_responses += 1
         if self.isHard :
             self.next()
         else :
             self.sender().setEnabled(False)
+    
+    # No points added or deducted for passing, then move on to the next card
+    def pass_on (self) :
+        self.passes += 1
+        self.next()
     
     # Draw the next card, or end the game if the deck is empty
     def next (self) :

@@ -33,11 +33,13 @@ class MainWindow (QMainWindow) :
         self.basicCheck      = QCheckBox("Basic kana")
         self.diacriticCheck  = QCheckBox("Diacritics ( \" / º )")
         self.digraphCheck    = QCheckBox("Digraphs (yōon)")
-        self.optionsGroup    = QGroupBox("Options")
+        self.formatGroup     = QGroupBox("Format")
         self.multipleRadio   = QRadioButton("Multiple choice")
         self.multipleSpin    = QSpinBox()
         self.multipleLabel   = QLabel("choices (max. 10)")
         self.inputRadio      = QRadioButton("Rōmaji input")
+        self.optionsGroup    = QGroupBox("Options")
+        self.passCheck       = QCheckBox("Allow passes")
         self.hardCheck       = QCheckBox("No second chances (hard)") 
         self.startButton     = QPushButton("Start!")
         
@@ -68,15 +70,20 @@ class MainWindow (QMainWindow) :
         setBox.addWidget(self.diacriticCheck)
         setBox.addWidget(self.digraphCheck)
         self.setGroup.setLayout(setBox)
-
-        optionsBox = QVBoxLayout()
-        optionsBox.addStretch(1)
-        optionsBox.addWidget(self.multipleRadio)
+        
+        formatBox = QVBoxLayout()
+        formatBox.addStretch(1)
+        formatBox.addWidget(self.multipleRadio)
         multipleBox = QHBoxLayout()        
         multipleBox.addWidget(self.multipleSpin)
         multipleBox.addWidget(self.multipleLabel)
-        optionsBox.addLayout(multipleBox)
-        optionsBox.addWidget(self.inputRadio)
+        formatBox.addLayout(multipleBox)
+        formatBox.addWidget(self.inputRadio)
+        self.formatGroup.setLayout(formatBox)
+
+        optionsBox = QVBoxLayout()
+        optionsBox.addStretch(1)
+        optionsBox.addWidget(self.passCheck)
         optionsBox.addWidget(self.hardCheck)        
         self.optionsGroup.setLayout(optionsBox)
         
@@ -84,6 +91,7 @@ class MainWindow (QMainWindow) :
         mainLayout.addWidget(self.topLabel)
         mainLayout.addWidget(self.kanaGroup)
         mainLayout.addWidget(self.setGroup)
+        mainLayout.addWidget(self.formatGroup)
         mainLayout.addWidget(self.optionsGroup)
         mainLayout.addWidget(self.startButton)
 
@@ -111,7 +119,7 @@ class MainWindow (QMainWindow) :
         if not digraph :
             deck -= kanadict.digraph
         
-        self.game = MultipleChoiceGameWindow(deck, self.hardCheck.isChecked(), self.multipleSpin.value())
+        self.game = MultipleChoiceGameWindow(deck, self.hardCheck.isChecked(), self.passCheck.isChecked(), self.multipleSpin.value())
         self.game.show()
         
     
