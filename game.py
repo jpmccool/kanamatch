@@ -26,15 +26,19 @@ class GameWindow (QMainWindow) :
         
         self.setWindowIcon(QIcon("icon.png"))
         
-        self.deck = deck    # The deck of flash cards to draw
+        # Copy the provided deck into a list and shuffle it
+        self.deck = [*deck]
+        random.shuffle(self.deck)
+        
         self.isHard = isHard
         self.passEnabled = passEnabled
         
         self.score = 0
-        self.n_cards = len(self.deck)
         self.correct = 0
         self.incorrect = 0
         self.passes = 0
+        
+        self.next = 0
         
         self.cardLabel = QLabel()
         self.cardLabel.setAlignment(Qt.AlignHCenter)
@@ -51,8 +55,9 @@ class GameWindow (QMainWindow) :
         self.setCentralWidget(centralWidget)
         
     def draw (self) :
-        self.setWindowTitle("Quiz Progress: " + str(round(100 * (1 - (len(self.deck) / self.n_cards)))) + "%")
-        card = self.deck.pop()
+        self.setWindowTitle("Quiz Progress: " + str(round(100 * (1 - (self.next / len(self.deck))))) + "%")
+        card = self.deck[self.next]
+        self.next += 1
         self.cardLabel.setPixmap(QPixmap("./kana/" + card + ".png"))
         return card
     
@@ -98,21 +103,15 @@ class MultipleChoiceGameWindow (GameWindow) :
     def draw (self) :
         # Draw a card
         curr_card = super().draw()
-        # Clear the inputLayout of old buttons, if any
-        '''
-        while self.inputLayout.count() > 0 :
-            button = self.inputLayout.takeAt(0)
-            if button.widget() is True :
-                button.widget().deleteLater()
-        '''
+        # Clear the inputLayout of old buttons
         self.clear_layout(self.inputLayout)
         # Remove the current card from the list of tags temporarily to avoid false buttons
         self.tags.remove(curr_card)
         # TODO: also remove any tags from self.tags with conflicting labels, temporarily: ji and (d)ji, zu and (d)zu, ha/wa and wa, he/e and e, wo/o and o
         # Build a hand of random tags for the 'wrong' options and shuffle in the one correct tag (curr_card)
-        hand = random.sample(self.tags, self.choices - 1)
+        hand = random.choices(self.tags, k = self.choices - 1)
         hand.append(curr_card)
-        hand = random.sample(hand, self.choices)
+        random.shuffle(hand)
         # For each card in the hand, add a new button with the appropriate label to the inputLayout
         for card in hand :
             button = QPushButton(kanadict.kana[card][1]) # TODO: Set the label to include alternate acceptable answers, e.g. he / e, o / wo, etc.
