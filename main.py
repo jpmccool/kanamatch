@@ -43,15 +43,14 @@ class MainWindow (QMainWindow) :
         self.hardCheck       = QCheckBox("No second chances (hard)") 
         self.startButton     = QPushButton("Start!")
         
-        # TODO: Set previously selected options, or options from saved preferences, or sensible default options, in that order
-        # TODO: Add a button to let the user save the current options, but only if they make sense
-        self.hiraganaCheck.setChecked(True)   # This is a sensible default
-        self.basicCheck.setChecked(True)      # This is a sensible default
-        self.diacriticCheck.setChecked(False) # This is a sensible default
-        self.digraphCheck.setChecked(False)   # This is a sensible default        
-        self.multipleRadio.setChecked(True)   # This is a sensible default
-        self.multipleSpin.setRange(2, 10)     # There must be at least two options for the quiz to be considered multiple choice
-        self.multipleSpin.setValue(4)         # This is a sensible default
+        # Sensible defaults
+        self.hiraganaCheck.setChecked(True)
+        self.basicCheck.setChecked(True)
+        self.diacriticCheck.setChecked(False)
+        self.digraphCheck.setChecked(False)        
+        self.multipleRadio.setChecked(True)
+        self.multipleSpin.setRange(2, 10)
+        self.multipleSpin.setValue(4)
         self.startButton.clicked.connect(self.launch_game)
         
         self.layout_widgets()

@@ -61,7 +61,7 @@ class GameWindow (QMainWindow) :
         self.cardLabel.setPixmap(QPixmap("./kana/" + card + ".png"))
         return card
     
-    def end (self) : # TODO: Make a much more satisfying ending
+    def end (self) :
         self.clear_layout(self.mainLayout)
         self.setWindowTitle("Quiz Complete!")
         report  = "<h1>Quiz Complete!</h1><br /><br />"
