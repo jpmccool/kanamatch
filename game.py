@@ -38,7 +38,7 @@ class GameWindow (QMainWindow) :
         self.incorrect = 0
         self.passes = 0
         
-        self.next = 0
+        self.next_card = 0
         
         self.cardLabel = QLabel()
         self.cardLabel.setAlignment(Qt.AlignHCenter)
@@ -55,9 +55,9 @@ class GameWindow (QMainWindow) :
         self.setCentralWidget(centralWidget)
         
     def draw (self) :
-        self.setWindowTitle("Quiz Progress: " + str(round(100 * (1 - (self.next / len(self.deck))))) + "%")
-        card = self.deck[self.next]
-        self.next += 1
+        self.setWindowTitle("Quiz Progress: " + str( round(100 * self.next_card / len(self.deck)) ) + "%")
+        card = self.deck[self.next_card]
+        self.next_card += 1
         self.cardLabel.setPixmap(QPixmap("./kana/" + card + ".png"))
         return card
     
@@ -151,7 +151,7 @@ class MultipleChoiceGameWindow (GameWindow) :
     
     # Draw the next card, or end the game if the deck is empty
     def next (self) :
-        if len(self.deck) > 0 :
+        if self.next_card < len(self.deck) :
             self.draw()
         else : # End condition reached
             self.end()
