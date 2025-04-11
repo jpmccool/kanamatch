@@ -46,6 +46,7 @@ class GameWindow (QMainWindow) :
         
         self.layout_widgets()
     
+    # Lay out widgets
     def layout_widgets (self) :
         self.mainLayout = QVBoxLayout()
         self.mainLayout.addWidget(self.cardLabel, Qt.AlignHCenter)
@@ -53,7 +54,8 @@ class GameWindow (QMainWindow) :
         centralWidget = QWidget()
         centralWidget.setLayout(self.mainLayout)
         self.setCentralWidget(centralWidget)
-        
+    
+    # Draw a card from the deck and display it
     def draw (self) :
         self.setWindowTitle("Quiz Progress: " + str( round(100 * self.next_card / len(self.deck)) ) + "%")
         card = self.deck[self.next_card]
@@ -61,6 +63,7 @@ class GameWindow (QMainWindow) :
         self.cardLabel.setPixmap(QPixmap("./kana/" + card + ".png"))
         return card
     
+    # End the game and display a report
     def end (self) :
         self.clear_layout(self.mainLayout)
         self.setWindowTitle("Quiz Complete!")
@@ -81,6 +84,7 @@ class GameWindow (QMainWindow) :
         closeButton.clicked.connect(self.close_window)
         self.mainLayout.addWidget(closeButton)
         
+    # Useful for cleaning up layouts
     def clear_layout(self, layout):
         while layout.count():
             child = layout.takeAt(0)
@@ -89,6 +93,7 @@ class GameWindow (QMainWindow) :
             elif child.layout() is not None:
                 self.clear_layout(child.layout())
     
+    # Close the game window
     def close_window (self) :
         self.close()
         self.destroy()
