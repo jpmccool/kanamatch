@@ -10,12 +10,9 @@ from PySide6.QtGui import (
 )
 
 from PySide6.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QWidget,
-    QLabel,
+    QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout,
-    QPushButton,
+    QLabel, QPushButton, QLineEdit
 )
 
 import kanadict
@@ -99,6 +96,7 @@ class GameWindow (QMainWindow) :
         self.destroy()
 
 class MultipleChoiceGameWindow (GameWindow) :
+    
     def __init__ (self, deck, isHard, passEnabled, choices) :
         super().__init__(deck, isHard, passEnabled)
         self.tags = [*self.deck]
@@ -163,9 +161,65 @@ class MultipleChoiceGameWindow (GameWindow) :
     
 
     
-if __name__ == '__main__' :
-    app = QApplication(sys.argv)
-    window = GameWindow()
-    window.show()
-    app.exec()
-
+class DirectInputGameWindow (GameWindow) :
+    
+    def __init__ (self, deck, isHard, passEnabled) :
+        super().__init__(deck, isHard, passEnabled)
+        self.inputLine = QLineEdit()
+        self.inputLine.setAlignment(Qt.AlignRight)
+        self.inputLine.returnPressed.connect(self.submit)
+        self.submitButton = QPushButton("Submit")
+        self.submitButton.clicked.connect(self.submit)
+        if passEnabled :
+            self.passButton = QPushButton("Pass")
+            self.passButton.clicked.connect(self.pass_on)
+            self.inputLayout.addWidget(self.passButton)
+        self.inputLayout.addWidget(self.inputLine)
+        self.inputLayout.addWidget(self.submitButton)
+        self.draw()
+    
+    def draw (self) :
+        # Draw a card and set the current correct response
+        curr_card = super().draw()
+        self.correct_response = kanadict.kana[curr_card][1]
+        # Clear the input line of old text
+        self.inputLine.clear()
+        self.inputLine.setFocus()
+    
+    def submit (self) :
+        response = self.inputLine.text()
+        # Correct response is a success
+        if response == self.correct_response :
+            self.success()
+        # Incorrect response is a failure
+        else :
+            self.failure()
+            
+    # One point for a correct guess, then move on to the next card
+    def success (self) :
+        self.score += 1
+        self.correct += 1
+        self.next()
+    
+    # Minus one point for a wrong guess, then either move on to the next card (isHard) or don't
+    def failure (self) :
+        self.score -= 1
+        self.incorrect += 1
+        if self.isHard :
+            self.next()
+        else :
+            # TODO: Should indicate that the user should try again
+            pass
+    
+    # No points added or deducted for passing, then move on to the next card
+    def pass_on (self) :
+        self.passes += 1
+        self.next()
+    
+    # Draw the next card, or end the game if the deck is empty
+    def next (self) :
+        if self.next_card < len(self.deck) :
+            self.draw()
+        else : # End condition reached
+            self.end()
+    

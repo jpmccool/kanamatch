@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 
 import kanadict
 from game import MultipleChoiceGameWindow
+from game import DirectInputGameWindow
 
 class MainWindow (QMainWindow) :
     def __init__(self) :
@@ -76,10 +77,8 @@ class MainWindow (QMainWindow) :
         digraph   = self.digraphCheck.isChecked()
         if hiragana is katakana is False :
             size = 0
-            # MARK
         elif basic is diacritic is digraph is False :
             size = 0
-            # MARK
         else :
             self.deck = (kanadict.hiragana if hiragana else set()) | (kanadict.katakana if katakana else set())
             if not basic :
@@ -148,7 +147,14 @@ class MainWindow (QMainWindow) :
         
     def launch_game (self) :
         
-        self.game = MultipleChoiceGameWindow(self.deck, self.hardCheck.isChecked(), self.passCheck.isChecked(), self.multipleSpin.value())
+        isHard = self.hardCheck.isChecked()
+        passEnabled = self.passCheck.isChecked()
+        
+        if self.multipleRadio.isChecked() :
+            self.game = MultipleChoiceGameWindow(self.deck, isHard, passEnabled, self.multipleSpin.value())
+        elif self.inputRadio.isChecked() :
+            self.game = DirectInputGameWindow(self.deck, isHard, passEnabled)
+            
         self.game.show()
         
     
