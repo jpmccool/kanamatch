@@ -25,7 +25,7 @@ class MainWindow (QMainWindow) :
         
         self.setWindowTitle("Kana Match")
         self.setWindowIcon(QIcon("icon.png"))
-
+        
         self.topLabel        = QLabel("Choose your kana quiz:")
         self.kanaGroup       = QGroupBox("Script")
         self.hiraganaCheck   = QCheckBox("Hiragana")
@@ -143,7 +143,6 @@ class MainWindow (QMainWindow) :
         centralWidget = QWidget()
         centralWidget.setLayout(mainLayout)
         self.setCentralWidget(centralWidget)
-    
         
     def launch_game (self) :
         
@@ -156,6 +155,12 @@ class MainWindow (QMainWindow) :
             self.game = DirectInputGameWindow(self.deck, isHard, passEnabled)
             
         self.game.show()
+
+    # Prevent the window from being resized by fixing the size to the current size
+    # This must be done *after* showing the window, or the dimensions of self.size() are wrong!
+    def show (self) :
+        super().show()
+        self.setFixedSize(self.size())
         
     
 app = QApplication(sys.argv)
